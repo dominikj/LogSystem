@@ -2,8 +2,13 @@ package LogAgent;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
@@ -52,13 +57,52 @@ public class XMLParser implements database {
 
 	@Override
 	public void saveEvent(String type, List<String> fields) {
-		
-		
 	}
 
 	@Override
 	public void deleteEvent(String type, String ID) {
-		// TODO Auto-generated method stub
+		 try {
+				File fXmlFile = new File(type +".xml");
+				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+				Document doc = dBuilder.parse(fXmlFile);
+						
+				doc.getDocumentElement().normalize();
+						
+				NodeList nList = doc.getElementsByTagName("event");
+				Node events = doc.getElementsByTagName(type).item(0);
+				
+				NamedNodeMap attr = events.getAttributes();
+				Node nodeAttr = attr.getNamedItem("counter");
+				
+				
+				for (int temp = 0; temp < nList.getLength(); temp++) {
+
+					Node nNode = nList.item(temp);
+										
+					if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+						Element eElement = (Element) nNode;
+						if (ID.equals(eElement.getAttribute("id"))){
+						events.removeChild(nNode);
+						int counter = Integer.parseInt(nodeAttr.getNodeValue()); 
+						--counter;
+						nodeAttr.setTextContent(Integer.toString(counter));
+						}
+					else
+							if(temp == nList.getLength()-1)
+								throw new Exception();
+					}
+					
+				}
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+				Transformer transformer = transformerFactory.newTransformer();
+				DOMSource source = new DOMSource(doc);
+				StreamResult result = new StreamResult(new File(type +".xml"));
+				transformer.transform(source, result);
+			    } catch (Exception e) {
+				System.out.println("Nie udało się usunąć podanej pozycji");
+			    }
 		
 	}
 

@@ -14,6 +14,7 @@ public class LogAgent {
 				System.out.println("liczba dodatkowych pól : " + list.get(i).get(1));
 				System.out.println("pola: " + list.get(i).get(2));
 		}
+		parser.deleteEvent("Zdarzenie1", "2");
 		System.out.println("-----------------");
 		ArrayList<String> events = parser.getEvents("Zdarzenie1");
 		for(int i = 0; i < events.size(); ++i){
