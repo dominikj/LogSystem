@@ -9,17 +9,20 @@ public class LogAgent {
 		XMLParser parser = new XMLParser();
 		
 		ArrayList<List<String>> list = parser.getLogs();
-		for(int i = 0; i < list.size(); ++i){
+		/*for(int i = 0; i < list.size(); ++i){
 				System.out.println("nazwa dziennika : " + list.get(i).get(0));
 				System.out.println("liczba dodatkowych pól : " + list.get(i).get(1));
 				System.out.println("pola: " + list.get(i).get(2));
-		}
-		parser.deleteEvent("Zdarzenie1", "2");
+		}*/
+		//parser.deleteEvent("Zdarzenie1", "2");
 		System.out.println("-----------------");
 		ArrayList<String> events = parser.getEvents("Zdarzenie1");
 		for(int i = 0; i < events.size(); ++i){
 			System.out.println(events.get(i));
 		}
+		ArrayList<String> values = new ArrayList<String>();
+		values.add("czas=19:40");
+		parser.saveEvent("Testowe2", values);
 	}
 
 }
