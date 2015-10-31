@@ -25,11 +25,8 @@ public class XMLParser implements database {
 				Document doc = dBuilder.parse(fXmlFile);
 						
 				doc.getDocumentElement().normalize();
-
-				System.out.println("Element glowny:" + doc.getDocumentElement().getNodeName());
 						
 				NodeList nList = doc.getElementsByTagName("log");
-
 				for (int temp = 0; temp < nList.getLength(); temp++) {
 
 					Node nNode = nList.item(temp);
@@ -43,6 +40,7 @@ public class XMLParser implements database {
 						list.add(eElement.getElementsByTagName("liczbapol").item(0).getTextContent());
 						list.add(eElement.getElementsByTagName("pola").item(0).getTextContent());
 						logs.add(list);
+				
 						
 					}
 				}
@@ -65,20 +63,18 @@ public class XMLParser implements database {
 	}
 
 	@Override
-	public ArrayList<List<String>>  getEvents(String type) {
-		ArrayList<List<String>> logs = new ArrayList<List<String>>();
+	public ArrayList<String>  getEvents(String type) {
+		ArrayList<String> events = new ArrayList<String>();
 		 try {
 	
-				File fXmlFile = new File("./logs.xml");
+				File fXmlFile = new File(type +".xml");
 				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 				Document doc = dBuilder.parse(fXmlFile);
 						
 				doc.getDocumentElement().normalize();
-
-				System.out.println("Element glowny:" + doc.getDocumentElement().getNodeName());
 						
-				NodeList nList = doc.getElementsByTagName("log");
+				NodeList nList = doc.getElementsByTagName("event");
 
 				for (int temp = 0; temp < nList.getLength(); temp++) {
 
@@ -88,20 +84,13 @@ public class XMLParser implements database {
 					if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
 						Element eElement = (Element) nNode;
-						List<String> list = new ArrayList<String>();
-						list.add(eElement.getAttribute("nazwa"));
-						list.add(eElement.getElementsByTagName("liczbapol").item(0).getTextContent());
-						list.add(eElement.getElementsByTagName("pola").item(0).getTextContent());
-						logs.add(list);
-						
+						events.add(eElement.getTextContent());
 					}
 				}
 			    } catch (Exception e) {
 				e.printStackTrace();
 			    }
-		 return logs;
-		
-		return null;
+		 return events;
 	}
 
 }
