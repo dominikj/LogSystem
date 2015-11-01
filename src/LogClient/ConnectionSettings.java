@@ -1,5 +1,6 @@
 package LogClient;
 
+
 import javax.swing.JFrame;
 
 public class ConnectionSettings extends JFrame {
@@ -7,3 +8,4 @@ public class ConnectionSettings extends JFrame {
 	// TODO Auto-generated constructor stub
 }
 }
+
