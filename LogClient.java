@@ -9,7 +9,7 @@ public class LogClient {
 
 			@Override
 			public void run() {
-				MainWindow win = new MainWindow();
+				new ProgramLogic();
 				
 			}
 			
