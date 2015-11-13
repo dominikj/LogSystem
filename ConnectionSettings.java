@@ -1,8 +1,12 @@
 package LogClient;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -16,8 +20,9 @@ public class ConnectionSettings extends JFrame {
 	private JTextField address;
 	private JTextField port;
 	private JButton connect;
-	
-	public ConnectionSettings() {
+	private ProgramLogic plog;
+	public ConnectionSettings(ProgramLogic pl) {
+		plog = pl;
 		setResizable(false);
 		setAlwaysOnTop(true);
 		getContentPane().setLayout(null);
@@ -50,6 +55,22 @@ public class ConnectionSettings extends JFrame {
 	    connect = new JButton("Połącz");
 		connect.setBounds(164, 117, 117, 25);
 		panel.add(connect);
+		connect.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String _address = address.getText().trim();
+				String _port = port.getText().trim();
+				if (!(_address.isEmpty()) && !(_port.isEmpty())){
+					dispose();
+					plog.connect(_address, Integer.parseInt(_port));
+					plog.getLogs();
+				
+		}
+				
+			}
+		});
+		setLocationRelativeTo(null);
 		setVisible(true);
 
 	}
