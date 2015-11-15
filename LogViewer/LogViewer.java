@@ -1,15 +1,15 @@
-package LogClient;
+package LogViewer;
 
 import javax.swing.SwingUtilities;
 
-public class LogClient {
+public class LogViewer {
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater( new Runnable() {
 
 			@Override
 			public void run() {
-				MainWindow win = new MainWindow();
+				new ProgramLogic();
 				
 			}
 			
