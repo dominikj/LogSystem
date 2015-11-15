@@ -13,8 +13,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
-import com.sun.java_cup.internal.runtime.Scanner;
-import com.sun.java_cup.internal.runtime.Symbol;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -184,7 +182,7 @@ public class XMLParser implements database {
 	}
 
 	@Override
-	public void saveEvent(String type, List<String> fields) {
+	public void saveEvent(String type, String owner, List<String> fields) {
 
 		try {
 			File fXmlFile = new File(type + ".xml");
@@ -202,10 +200,14 @@ public class XMLParser implements database {
 
 			Element event = doc.createElement("event");
 			event.setAttribute("id", Integer.toString(counter));
-
+			
+			Element element1 = doc.createElement("zrodlo");
+			element1.setTextContent(owner);
+			event.appendChild(element1);
+			System.out.println("oo: " + owner);
 			for (int i = 0; i < fields.size(); ++i) {
 				String[] field = fields.get(i).split("=");
-				Element element = doc.createElement(field[0]);
+				Element element = doc.createElement(field[0].replace(" ", "_"));
 				element.setTextContent(field[1]);
 				event.appendChild(element);
 			}
@@ -219,6 +221,7 @@ public class XMLParser implements database {
 			StreamResult result = new StreamResult(new File(type + ".xml"));
 			transformer.transform(source, result);
 		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 	}
 

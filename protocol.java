@@ -15,15 +15,17 @@ public class protocol implements connection{
 	private String dataIn;
 	private String dataOut;
 	private ServerSocket serSoc;
-	private Socket socket;
+	public Socket socket;
 	private Request request;
 	private String logName; 
 	private String idDeletedEvent;
+	public  String owner;
 	
 	@Override
 	public void listen(int port) {
 		try {
-			serSoc = new ServerSocket(port);
+			if(port != 0)
+				serSoc = new ServerSocket(port);
 			socket = serSoc.accept();
 			input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			output = new DataOutputStream(socket.getOutputStream());
@@ -53,7 +55,7 @@ public class protocol implements connection{
 	@Override
 	public void sendLogsList(ArrayList<List<String>> list) {
 		for(List<String> l : list){
-			dataOut = "LOG " + l.get(0) + "\n\r" + "FIELDS " + l.get(2) + "\n\r";
+			dataOut = "LOG, " + l.get(0) + "\n\r" + "FIELDS, " + l.get(2) + "\n\r";
 			try {
 				output.writeBytes(dataOut);
 			} catch (IOException e) {
@@ -61,14 +63,21 @@ public class protocol implements connection{
 				e.printStackTrace();
 			}
 		}
-		dataOut = "ENDLOGS \n\r";
+		dataOut = "ENDLOGS";
 		try {
 			output.writeBytes(dataOut);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		try {
+			socket.close();
+			request = Request.CLOSE;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
@@ -97,7 +106,13 @@ public class protocol implements connection{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		
+		    try {
+				socket.close();
+				request = Request.CLOSE;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 		
 	}
@@ -138,10 +153,20 @@ public class protocol implements connection{
 				System.out.println(dataIn);
 				fields.add(dataIn);
 			}
+			owner = socket.getInetAddress().toString().replace(".", "") + Integer.toString(socket.getPort());
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		try {
+			socket.close();
+			request = Request.CLOSE;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		return fields;
 	}
 
