@@ -1,5 +1,6 @@
 package LogViewer;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.sql.Date;
 import java.text.DateFormat;
@@ -42,35 +43,26 @@ public class ProgramLogic {
 			mainW.info.setText("Nie udało się połączyć");
 		}
  }
- public void sendEvent(String logName){
-	 try{
-	mainW.table.getCellEditor().stopCellEditing();
-	 }catch(Exception ex){
-	 }
-	 ArrayList<String> dataToSend  = new ArrayList<String>();
-		String tmp =(String) mainW.chooseEvent.getSelectedItem();
-		System.out.println(tmp);
-		for(ArrayList<String> s: logs ){
-			if(s.get(0).equals(tmp)){
-				int i;
-			    for ( i = 0; i < mainW.modelTable.getColumnCount()-2; i++) {
-			         String result = (String) mainW.table.getModel().getValueAt(0, i);
-			         dataToSend.add(s.get(i +1).trim() + "=" + result);
-			     }
-			    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-			    Calendar cal = Calendar.getInstance();
-			    dataToSend.add("data_i_czas=" + dateFormat.format(cal.getTime()));
-			    dataToSend.add("kod_przyczyny=" + (String) mainW.table.getModel().getValueAt(0, i));
-			    dataToSend.add("przewidywana_groznosc=" + (String) mainW.table.getModel().getValueAt(0, i+1));
-				break;
-			}
-		}
-		try {
-			con.sendEvent(tmp, dataToSend);
-			mainW.info.setText("Wysłano zdarzenie");
-		} catch (IOException e) {
-			mainW.info.setText("Nie udało się wysłać zdarzenia");
-		}
-	
+
+ public ArrayList<ArrayList<String>> getLog(String log){
+	 con.connect(ipAddress, port);
+	 ArrayList<ArrayList<String>> data = null;
+	try {
+		data = con.getLog(log);
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	 return data;
+ }
+ public void deleteEvent(String log, String ID){
+	 try {
+		 connect();
+		con.deleteEvent(log, ID);
+		mainW.chooseSelector();
+		
+	} catch (IOException e) {
+		mainW.info.setText("Nie wybrałeś wpisu do skasowania lub nie udało się połączyć");
+	}
  }
 }

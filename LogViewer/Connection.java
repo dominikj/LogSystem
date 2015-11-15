@@ -31,6 +31,7 @@ public class Connection {
 			return true;
 		return false;
 	} catch (Exception ex) {
+		ex.printStackTrace();
 		return false;
 	} 
 	
@@ -54,20 +55,32 @@ public class Connection {
 				else if(tmp[0].equals("ERROR"))
 					throw (new IOException());
 			}
-
+			close();
 		return logs;
 	}
 	
-	void sendEvent(String event, ArrayList<String> attributes) throws IOException{
-		output.writeBytes("ADDEVENT"+ event+"\r\n");
-		for(String s : attributes){
-			output.writeBytes(s + "\r\n");
-			System.out.println(s);
+	ArrayList<ArrayList<String>> getLog(String log) throws IOException{
+		output.writeBytes("GETLOG"+ log+"\r\n");
+		ArrayList<ArrayList<String>> events = new ArrayList<ArrayList<String>>();
+		input.readLine();
+		while(!(dataIn = input.readLine()).equals("ENDEVENTS")){
+			System.out.println("AAA:" + dataIn);
+			events.add(new ArrayList<String>());
+			events.get(events.size() -1).add(dataIn);
+			while(!(dataIn = input.readLine()).equals("ENDEVENT")){
+				events.get(events.size() -1).add(dataIn);
+			}
+			
 		}
-		output.writeBytes("ENDEVENT\r\n");
 
 			close();
-		
+		return events;
+	}
+	public void deleteEvent(String log, String id) throws IOException{
+		output.writeBytes("DELETEEVENT " + log.trim() + " " + id.trim() + "\r\n");
+		/*if(!(input.readLine().equals("OK")))
+			throw new IOException();*/
+		close();
 	}
 	
 
