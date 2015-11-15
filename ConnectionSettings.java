@@ -44,11 +44,13 @@ public class ConnectionSettings extends JFrame {
 		
 		address = new JTextField();
 		address.setBounds(193, 32, 114, 19);
+		address.setText("127.0.0.1");
 		panel.add(address);
 		address.setColumns(10);
 		
 		port = new JTextField();
 		port.setBounds(193, 76, 114, 19);
+		port.setText("10799");
 		panel.add(port);
 		port.setColumns(10);
 		
@@ -63,7 +65,9 @@ public class ConnectionSettings extends JFrame {
 				String _port = port.getText().trim();
 				if (!(_address.isEmpty()) && !(_port.isEmpty())){
 					dispose();
-					plog.connect(_address, Integer.parseInt(_port));
+					plog.ipAddress = _address;
+					plog.port = Integer.parseInt(_port);
+					plog.connect();
 					plog.getLogs();
 				
 		}

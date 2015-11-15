@@ -21,7 +21,7 @@ public class Connection {
 	
 	public boolean connect(String address, int port) {
 	try {
-		Socket soc = new Socket(address, port);
+		 soc = new Socket(address, port);
 		input = new BufferedReader (new InputStreamReader(soc.getInputStream()));
 		output = new DataOutputStream (soc.getOutputStream());
 		output.writeBytes("HELLO\r\n");
@@ -38,7 +38,6 @@ public class Connection {
 	public ArrayList<ArrayList<String>> getLogs() throws IOException{
 		ArrayList<ArrayList<String>> logs = new ArrayList<ArrayList<String>>();
 
-			
 			output.writeBytes("GETLOGSLIST\r\n");
 			String[] tmp;
 			while (!((dataIn = input.readLine()).equals("ENDLOGS"))){
@@ -59,17 +58,24 @@ public class Connection {
 		return logs;
 	}
 	
-/*	void sendEvent(String event, ArrayList<string> attributes){
+	void sendEvent(String event, ArrayList<String> attributes) throws IOException{
+		output.writeBytes("ADDEVENT"+ event+"\r\n");
+		for(String s : attributes){
+			output.writeBytes(s + "\r\n");
+			System.out.println(s);
+		}
+		output.writeBytes("ENDEVENT\r\n");
+
+			close();
 		
 	}
 	
-*/
+
 	void close(){
 		try {
-			soc.close();
+			if(!soc.isClosed())
+				soc.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 	

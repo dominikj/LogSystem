@@ -43,6 +43,15 @@ public class MainWindow extends JFrame {
 		send = new JButton("Wyślij ");
 		send.setBounds(420, 110, 117, 25);
 		send.setEnabled(false);
+		send.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PrHandle.connect();
+				PrHandle.sendEvent((String) chooseEvent.getSelectedItem());
+				
+			}
+		});
 		panel.add(send);
 		
 		JLabel lblNewLabel = new JLabel("Zdarzenie:");
@@ -58,13 +67,14 @@ public class MainWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String tmp =(String) chooseEvent.getSelectedItem();
-				System.out.println(tmp);
 				for(ArrayList<String> s: PrHandle.logs ){
 					if(s.get(0).equals(tmp)){
 						modelTable.setColumnCount(0);
 						modelTable.setRowCount(0);
 						for(int i = 1; i < s.size(); ++i)
 							 modelTable.addColumn(s.get(i));
+						modelTable.addColumn("kod przyczyny");
+						modelTable.addColumn("Przewidywana groźność");
 						modelTable.addRow(new Object[] { "<nowe zdarzenie>" });
 						break;
 					}
@@ -77,7 +87,6 @@ public class MainWindow extends JFrame {
 	    info = new JLabel("Nie jesteś połączony");
 		info.setBounds(42, 167, 187, 15);
 		panel.add(info);
-		
 		JButton connectionDialog = new JButton("Serwer");
 		connectionDialog.setBounds(420, 147, 117, 25);
 		connectionDialog.addActionListener(new ActionListener() {
