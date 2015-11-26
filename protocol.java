@@ -19,22 +19,25 @@ public class protocol implements connection{
 	private Request request;
 	private String logName; 
 	private String idDeletedEvent;
-	public  String owner;
 	
 	@Override
 	public void listen(int port) {
 		try {
 			if(port != 0)
 				serSoc = new ServerSocket(port);
+			System.out.println("Czekam na połączenie");
 			socket = serSoc.accept();
 			input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			output = new DataOutputStream(socket.getOutputStream());
+			System.out.println("Połączono");
 			dataIn = input.readLine();
 			if(dataIn.equals("HELLO")){
+				System.out.println("Mam powitanie");
 			  dataOut = "OK \n\r";
 			  output.writeBytes(dataOut);
 			  dataIn = input.readLine();
 			  String[] splittedData = dataIn.split(" ");
+				System.out.println("Info: " +splittedData[0]);
 			  switch(splittedData[0]){
 			  case "GETID": request = Request.GETID;break;
 			  case "ADDEVENT" : { request = Request.ADDEVENT; logName = splittedData[1]; break;} 
@@ -131,6 +134,13 @@ public class protocol implements connection{
 
 	@Override
 	public String getIDEventDele() {
+		try {
+			socket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		request = Request.CLOSE;
 		return idDeletedEvent;
 	}
 
@@ -153,7 +163,6 @@ public class protocol implements connection{
 				System.out.println(dataIn);
 				fields.add(dataIn);
 			}
-			owner = socket.getInetAddress().toString().replace(".", "") + Integer.toString(socket.getPort());
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

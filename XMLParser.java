@@ -76,13 +76,13 @@ public class XMLParser implements database {
 					Element eElement = (Element) nNode;
 					if (ID.equals(eElement.getAttribute("id"))) { //jeżeli id zgadza się, skasuj wpis
 						events.removeChild(nNode);
-						int counter = Integer.parseInt(nodeAttr.getNodeValue());
-						--counter;
-						nodeAttr.setTextContent(Integer.toString(counter)); // zmniejsz i zapisz licznik wpisów 
-					} else if (temp == nList.getLength() - 1) // jeżeli wpisu nie odnaleziono rzuć wyjątek
-						throw new Exception();
-				}
+					//	int counter = Integer.parseInt(nodeAttr.getNodeValue());
+					//	--counter;
+					//	nodeAttr.setTextContent(Integer.toString(counter)); // zmniejsz i zapisz licznik wpisów 
+						break;
+					} 
 
+			}
 			}
 			TransformerFactory transformerFactory = TransformerFactory
 					.newInstance();
@@ -90,10 +90,9 @@ public class XMLParser implements database {
 			DOMSource source = new DOMSource(doc);
 			StreamResult result = new StreamResult(new File(type + ".xml"));
 			transformer.transform(source, result);
-		} catch (Exception e) {
-			System.out.println("Nie udało się usunąć podanej pozycji");
-		}
-
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
 	}
 /**
  * Pobiera wpisy z podanego dziennika
@@ -135,6 +134,7 @@ public class XMLParser implements database {
 					}
 					events.add(val);
 				}
+				events.add("ENDEVENT");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -182,7 +182,7 @@ public class XMLParser implements database {
 	}
 
 	@Override
-	public void saveEvent(String type, String owner, List<String> fields) {
+	public void saveEvent(String type, List<String> fields) {
 
 		try {
 			File fXmlFile = new File(type + ".xml");
@@ -201,10 +201,6 @@ public class XMLParser implements database {
 			Element event = doc.createElement("event");
 			event.setAttribute("id", Integer.toString(counter));
 			
-			Element element1 = doc.createElement("zrodlo");
-			element1.setTextContent(owner);
-			event.appendChild(element1);
-			System.out.println("oo: " + owner);
 			for (int i = 0; i < fields.size(); ++i) {
 				String[] field = fields.get(i).split("=");
 				Element element = doc.createElement(field[0].replace(" ", "_"));
